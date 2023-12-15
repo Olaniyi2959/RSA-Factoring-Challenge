@@ -1,70 +1,66 @@
 #!/usr/bin/python3
+"""
+Factorize as many numbers as possible into a product of two smaller numbers.
+Usage: factors <file>
+is a file containing natural numbers to factor.
+One number per line
+You can assume that all lines will be valid natural numbers\
+        greater than 1.
+You can assume that there will be no empy line, and no space\
+        before and after the valid number
+The file will always end with a new line
+Output format: n=p*q
+one factorization per line
+p and q don’t have to be prime numbers
+You can work on the numbers of the file in the order of your choice
+The program should run without any dependency: You will not be ablei\
+        to install anything on the machine we will run your program on
+Time limit: The program will be killed after 5 seconds\
+        if it has not finish
+"""
+# library to get arguments
+
 
 import sys
-import time
 
-# Function to check if a number is prime
+
 def is_prime(n):
-    '''
-    Checks if a number is prime.
-
-    Args:
-        n (int): The number to check.
-
-    Returns:
-        bool: True if the number is prime, False otherwise.
-    '''
     if n < 2:
         return False
-    for i in range(2, int(n**0.5) + 1):
+    for i in range(2, int(n ** 0.5) + 1):
         if n % i == 0:
             return False
     return True
 
-# Function to find prime factors p and q of n
-def factorize_rsa(n):
-    '''
-    Finds prime factors p and q of an RSA number n.
 
-    Args:
-        n (int): The RSA number to factorize.
+# fn unpack number factorial
+def fc():
+    # The function fc to search file to convert number and format  n=p*q
+    try:
+        revfile = sys.argv[1]
+        with open(revfile) as f:
+            for revnumber in f:
+                revnumber = int(revnumber)
+                if revnumber == 1:
+                    print("1=1*1")
+                    continue
+                if revnumber % 2 == 0:
+                    print("{}={}*{}".format(revnumber, revnumber // 2, 2))
+                    continue
+                if is_prime(revnumber):
+                    print("{}={}*{}".format(revnumber, revnumber, revnumber))
+                    continue
+                i = 3
+                while i < revnumber // 2:
+                    if revnumber % i == 0:
+                        print("{}={}*{}".format(revnumber, revnumber // i, i))
+                        break
+                    i = i + 2
+                if i == (revnumber // 2) + 1:
+                    print("{}={}*{}".format(revnumber, revnumber, 1))
+    except (IndexError):
+        pass
 
-    Returns:
-        tuple or None: A tuple (p, q) if prime factors are found, None otherwise.
-    '''
-    for p in range(2, int(n**0.5) + 1):
-        if n % p == 0 and is_prime(p):
-            q = n // p
-            if is_prime(q):
-                return (p, q)
-    return None
 
-# Check for the correct number of command line arguments
-if len(sys.argv) != 2:
-    print("Usage: rsa <file>")
-    exit()
-
-# Read the input file name from the command line arguments
-input_file = sys.argv[1]
-
-try:
-    with open(input_file, 'r') as f:
-        n = int(f.readline().strip())
-except FileNotFoundError:
-    print("File not found")
-    exit()
-
-start_time = time.time()
-
-# Find prime factors p and q of n
-factors = factorize_rsa(n)
-
-if factors:
-    p, q = factors
-    print(f"{n}={p}*{q}")
-else:
-    print("Unable to find prime factors")
-
-# Check if the elapsed time exceeds 5 seconds
-if time.time() - start_time > 5:
-    print("Time limit exceeded")
+# autostart
+fc()

@@ -1,62 +1,46 @@
 #!/usr/bin/python3
+import os
 
 
-import sys
-import time
-
-
-def factorize(num):
-    '''Takes a number as input.
-    Args:
-        num: input integer.
-        Return: A tuple of two factors if the number is not a prime.
-                None if the number is prime.
-    '''
-    for i in range(2, int(num**0.5)+1):
-        if num % i == 0:
-            return (i, num//i)
-    return None
+def factorize(value):
+    """Factorize an integer value into a product of its prime factors.
+    If the value is prime, print "value is prime".
+    """
+    if value < 2:
+        return
+    if value == 2:
+        print(f"{value} is prime")
+        return
+    factors = []
+    i = 2
+    while i <= value:
+        if value % i == 0:
+            factors.append(i)
+            value = value // i
+        else:
+            i += 1
+    if len(factors) == 1:
+        print(f"{factors[0]} is prime")
+    else:
+        print(f"{value} = ", end="")
+        print(" * ".join(str(f) for f in factors))
 
 
 if __name__ == "__main__":
-
-
-    '''Reads the input file.
-    '''
-    if len(sys.argv) != 2:
-        print("Usage: factors <file>")
-        exit()
-
-
-    input_file = sys.argv[1]
-
-
     try:
-        with open(input_file, 'r') as f:
-            lines = f.readlines()
-    except FileNotFoundError:
-        print("File not found")
-        exit()
-
-
-    start_time = time.time()
-
-
-    '''loops over each line (which should contain one natural number per line),
-        and calls factorize on each number.
-        If factorize returns a tuple of factors,
-        it prints the factorization in the desired forma
-    '''
-    for line in lines:
-        num = int(line.strip())
-        factors = factorize(num)
-        if factors:
-            print(f"{num}={factors[0]}*{factors[1]}")
-
-
-        '''If the elapsed time exceeds 5 seconds,
-            the program exits with an error message.
-        '''
-        if time.time() - start_time > 5:
-            print("Time limit exceeded")
+        file_path = input("Enter file path: ")
+        if not os.path.exists(file_path):
+            print(f"Error: file {file_path} does not exist")
             exit()
+        if not os.path.isfile(file_path):
+            print(f"Error: {file_path} is not a file")
+            exit()
+        with open(file_path) as file:
+            for line in file.readlines():
+                try:
+                    value = int(line.strip())
+                    factorize(value)
+                except ValueError:
+                    print(f"Error: {line.strip()} is not a valid integer")
+    except Exception as e:
+        print(f"Error: {e}")
